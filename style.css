@@ -1,0 +1,44 @@
+* {
+	-webkit-font-smoothing: antialiased;
+}
+
+.imgs img { float: left; width: 200px; height: 200px;}
+.clear { clear : both; }
+.example { width : 600px; }
+#author {float: right; padding-right: 1em; margin: 0;}
+
+img { display:block; width : 600px; }
+
+h1, h2 { 
+	border-bottom : 1px solid #ccc;
+	font-family: "Georgia";
+	font-variant: small-caps;
+	padding-left: 1em;
+}
+
+p, dt, dd {
+	text-align: justify;
+}
+
+article {
+	margin: 0; padding: 0;
+}
+
+pre {
+	background: #eee;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+dt { font-weight: bold; }
+dd { margin-left: 0.5cm; padding-left: 0.5cm; border-left: 1px solid #ccc; }
+
+pre > header { border-bottom: 1px solid #ccc; font-weight: bold;}
+
+@media print {
+	.break { page-break-before: always; }
+	h1, h2, h3, p, dt, dd, img, .protect {page-break-inside: never; }
+	pre {page-break-inside: avoid; }
+	article { page-break-inside: avoid; }
+}
