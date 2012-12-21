@@ -33,6 +33,7 @@ letterToVector <- function(letter){
   else if (letter == "C" || letter == "c"){x <- c(1,0,0)}
   else if (letter == "G" || letter == "g"){x <- c(0,1,0)}
   else if (letter == "T" || letter == "t"){x <- c(0,0,1)}
+  else if (letter == "U" || letter == "u"){x <- c(1,0,1)}
   else {x <- c(-1,-1,-1)}
 }
 
