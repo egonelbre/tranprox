@@ -16,7 +16,6 @@ nearest = function(x, xlen, i, n){
   xi = i*xlen/n
   li = clamp(floor(xi), 1, xlen)
   hi = clamp(ceiling(xi), 1, xlen)
-  cat(xi, ":", li, ":", hi, ":", i, ":", n, ":", xlen, "<\n")
   if( li == hi ){
     x[,li]
   } else {
