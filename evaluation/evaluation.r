@@ -1,4 +1,5 @@
 library("fields")
+library("ggplot2")
 library("rgl")
 
 clamp = function(value, low, high){
@@ -67,8 +68,12 @@ transform <- function(m1, func){
   
 }
 
-transform <- function(m1){
+transform_fourier <- function(m1){
   t(apply(m1,1,fft))
+}
+
+transform_haar <- function(m){
+  
 }
 
 drawLines <- function(m,color){
@@ -90,15 +95,29 @@ plotToFile <- function(m1,m2){
   
 }
 
+plotDistances <- function(distance_normal,distance_fourier){
+ # jpeg('distances.jpg')
+  #plot(distance_normal,type="l",col="red")
+  #plot(distance_fourier,type="l",col="blue")
+  #plot(distance_haar,type="l",col="green")
+  #dev.off()
+  qplot(distance_normal[,1],distance_normal[,2]) + geom_line()
+  qplot(distance_fourier[,1],distance_fourier[,2]) + geom_line()
+  
+  
+  
+}
+
 
 run <- function(fileName, separator){
-  print("Reading from file...")
   A <- as.matrix(read.table(fileName,sep=separator))
   B <- as.vector(A)
   
   n = (length(B)-1)
-  diff1 <-  matrix(0,n,1)
-  diff2 <-  matrix(0,n,1)
+  distance_normal <-  matrix(0,n,2)
+  distance_fourier <-  matrix(0,n,2)
+  distance_haar <-  matrix(0,n,2)
+  #distance_ <-  matrix(0,n,2)
   
   for(i in 1:n) {
     
@@ -106,15 +125,16 @@ run <- function(fileName, separator){
     m2 <- convertToMatrix(B[i+1])
     
     
-    #c1 <- compare(m1,m2)
-    diff1[i,1] = compare(m1,m2)
-    diff2[i,1] <- compare(transform(m1),transform(m2))
-    #c2 <- compare(transform(m1),transform(m2))
-    plotToFile(m1,m2)
+    distance_normal[i,] = c(i,compare(m1,m2))
+    distance_fourier[i,] <- c(i,compare(transform_fourier(m1),transform_fourier(m2)))
+    #distance_haar[i,] <- c(i, compare(transform_haar(m1),transform_haar(m2)))
+    #plotToFile(m1,m2)
   }
-  #print(diff1)
-  #print(diff2)
-  #print(diff1-diff2)
+  
+  
+  plotDistances(distance_normal,distance_fourier)
+  
+  #TODO: save distances into csv - each type into separate column
 }
 
 
