@@ -1,6 +1,12 @@
-library("fields")
-library("ggplot2")
-library("rgl")
+run = function(data, transform, distance){
+  transformed = lapply(data, transform)
+  pairnames = outer(data, data, pairname)
+  distances = outer(transformed, transformed, distance)
+  #rownames(distances) = pairnames
+  distances
+  
+}
+
 
 clamp = function(value, low, high){
   if(value < low) low
@@ -27,6 +33,36 @@ linear = function(x, xlen, i, n){
   rowSums(slice)/count
 }
 
+convert = function(interpolation, transformation){
+  function(seq){
+    t(apply(interpolation(seq),1,transformation))
+  }
+}
+
+
+
+mkInterpolate = function(n, method){
+  function(seq){
+    interpolate3(seq, n, method)
+  }
+}
+
+eucledian = function(m1,m2){
+  dist = list()
+  for(i in seq(m1)){
+    dist[i] = sqrt(sum((m1[[i]] - m2[[i]])^2))
+  }
+  dist
+}
+
+pairname = function(a,b){
+  paste('(',a,',',b,')', sep="")
+}
+
+readSequences = function(filename){
+  A = as.matrix(read.table(filename,sep=';'))
+  sequences = lapply(A, convertToMatrix)
+}
 
 ##convert letter into a vector
 letterToVector <- function(letter){
@@ -48,97 +84,11 @@ convertToMatrix <- function(string){
   m
 }
 
+data = readSequences("data.csv")
 
-##compare to matrices
-compare <- function(m1, m2){
-  n<- max(nrow(m1),nrow(m2))
-  
-  if(nrow(m1) < nrow(m2)){
-  m1 <- interpolate3(m1,n,linear)
-  }
-  else{
-    m2 <- interpolate3(m2,n,linear)
-  }
-  
-  return sqrt(sum((m1 - m2)^2))
-}
-
-#apply transformation function to matrix
-transform <- function(m1, func){
-  
-}
-
-transform_fourier <- function(m1){
-  t(apply(m1,1,fft))
-}
-
-transform_haar <- function(m){
-  
-}
-
-drawLines <- function(m,color){
-  points3d(m[,1],m[,2],m[,3],col=color)
-  lines3d(m[,1],m[,2],m[,3],col=color)
-  
-}
-
-#TODO: still need to think how to export the picture
-plotToFile <- function(m1,m2){
-  
-  drawLines(m2,"pink")
-  drawLines(m1,"green")
-  
-  drawLines(transform(m1),"red")
-  drawLines(transform(m2),"blue")
-  
-
-  
-}
-
-plotDistances <- function(distance_normal,distance_fourier){
- # jpeg('distances.jpg')
-  #plot(distance_normal,type="l",col="red")
-  #plot(distance_fourier,type="l",col="blue")
-  #plot(distance_haar,type="l",col="green")
-  #dev.off()
-  qplot(distance_normal[,1],distance_normal[,2]) + geom_line()
-  qplot(distance_fourier[,1],distance_fourier[,2]) + geom_line()
-  
-  
-  
-}
+dist.fourier = run(data, convert(mkInterpolate(5, linear), fft), eucledian)
+dist.haar = run(data, convert(mkInterpolate(5, linear), haar), euclidean)
 
 
-run <- function(fileName, separator){
-  A <- as.matrix(read.table(fileName,sep=separator))
-  B <- as.vector(A)
-  
-  n = (length(B)-1)
-  distance_normal <-  matrix(0,n,2)
-  distance_fourier <-  matrix(0,n,2)
-  distance_haar <-  matrix(0,n,2)
-  #distance_ <-  matrix(0,n,2)
-  
-  for(i in 1:n) {
-    
-    m1 <- convertToMatrix(B[i])
-    m2 <- convertToMatrix(B[i+1])
-    
-    
-    distance_normal[i,] = c(i,compare(m1,m2))
-    distance_fourier[i,] <- c(i,compare(transform_fourier(m1),transform_fourier(m2)))
-    #distance_haar[i,] <- c(i, compare(transform_haar(m1),transform_haar(m2)))
-    #plotToFile(m1,m2)
-  }
-  
-  
-  plotDistances(distance_normal,distance_fourier)
-  
-  #TODO: save distances into csv - each type into separate column
-}
-
-
-#TODO: calculate levenstein?
-#plot levenstein and transformed vs. normal 
-
-run("/home/demente/Documents/data.csv",";")
+##TODO: (list) object cannot be coerced to type 'double'
+matplot(cbind(fourier, haar), type="l")
