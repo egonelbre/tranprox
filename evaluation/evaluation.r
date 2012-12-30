@@ -1,6 +1,7 @@
 run = function(data, transform, distance){
   transformed = lapply(data, transform)
   pairnames = outer(data, data, pairname)
+  
   distances = outer(transformed, transformed, distance)
   #rownames(distances) = pairnames
   distances
@@ -29,13 +30,19 @@ linear = function(x, xlen, i, n){
   hi = clamp(xhigh, 1, xlen)
   count = hi - li + 1
   
-  slice = matrix(mat[,li:hi], nrow=3)
+  slice = matrix(x[,li:hi], nrow=3)
   rowSums(slice)/count
 }
 
 convert = function(interpolation, transformation){
   function(seq){
-    t(apply(interpolation(seq),1,transformation))
+    apply(interpolation(seq),1,transformation)
+    #interpolated = apply(seq,c(1,2),interpolation)
+    #print(interpolated)
+    #transformed = transformation(interpolated)
+    #print(transformed)
+    #t(transformed)
+    #return as.list(transformed)
   }
 }
 
@@ -46,6 +53,19 @@ mkInterpolate = function(n, method){
     interpolate3(seq, n, method)
   }
 }
+
+haar = function(){
+  function(seq){
+    h = dwt(data, filter="haar",n.levels=3, boundary="reflection", fast=FALSE)
+    h@W$W1
+  }
+}
+
+haar = function(data){
+  h = dwt(data, filter="haar",n.levels=1, boundary="reflection", fast=FALSE)
+  h@W$W1
+}
+
 
 eucledian = function(m1,m2){
   dist = list()
@@ -87,8 +107,7 @@ convertToMatrix <- function(string){
 data = readSequences("data.csv")
 
 dist.fourier = run(data, convert(mkInterpolate(5, linear), fft), eucledian)
-dist.haar = run(data, convert(mkInterpolate(5, linear), haar), euclidean)
+dist.haar = run(data, convert(mkInterpolate(5, linear),  haar), eucledian)
 
 
-##TODO: (list) object cannot be coerced to type 'double'
-matplot(cbind(fourier, haar), type="l")
+matplot(cbind(dist.fourier, dist.haar), type="l",xlab="Trial nr", ylab= "Transformed value")
