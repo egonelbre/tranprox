@@ -104,7 +104,7 @@ convertToMatrix <- function(string){
   m
 }
 
-data = readSequences("data.csv")
+data = readSequences("data.csv")[1:6]
 
 dist.fourier = run(data, convert(mkInterpolate(5, linear), fft), eucledian)
 dist.haar = run(data, convert(mkInterpolate(5, linear),  haar), eucledian)

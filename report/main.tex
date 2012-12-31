@@ -1,0 +1,147 @@
+% document type
+\documentclass [12pt]{article} % oneside
+
+% fixes
+\usepackage{fixltx2e} % LaTeX patches, \textsubscript
+\usepackage{cmap} % fix search and cut-and-paste in PDF
+
+% language
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% usability
+\usepackage {float}
+
+% formatting
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+\usepackage{fancyvrb}
+\usepackage{mdwlist}
+\usepackage{float,caption}
+
+\usepackage{graphicx}
+\usepackage{ifpdf}
+\usepackage{listings, textcomp, color, xcolor, caption}
+
+\title{Approximating discontinous functions}
+
+\author{
+    Egon Elbre \\
+        Department of Computer Science \\
+    University of Tartu\\
+    Tartu\\
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Calculating discontinous functions can be difficult and computationally
+expensive. By combining using approximation functions we can lower 
+the computational expensiveness. Defining good approximation function 
+can be a hard to get right. However, defining an approximation 
+that works for some value can be simpler. We show how combining
+several simple approximations can give us a better approximation
+and reduce computational requirements.
+\end{abstract}
+
+\section{Introduction}
+
+\paragraph{Outline}
+
+\section{Theory}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\defas}{ := }
+\newcommand{\err}[1]{\varepsilon_{#1}}
+
+We are trying to approximate a function $f$:
+
+$$f : X \mapsto \Real$$
+
+Although we explain the idea in $\Real$ set, the results also apply to 
+any set that has transitive relation $<$ and $+-$ operation (TODO: find the correct algebraic structure). 
+Using $<$ we can define $\min$ and $\max$ for that set.
+
+$$ \min(x,y) \defas \begin{cases}
+    x & \text{if $x \leq y$}, \\
+    y & \text{otherwise}.
+\end{cases}
+$$
+
+$$
+\max(x,y) \defas \begin{cases}
+    y & \text{if $x \leq y$}, \\
+    x & \text{otherwise}.
+\end{cases}
+$$
+
+X can be any set.
+
+\subsection{Exact approximation}
+
+Let's assume we are interested in range $R \subseteq X$. Let's assume we 
+have functions $\alpha$ and $\beta$ such that
+
+\begin{align*}
+    \alpha(x) &\leq f(x), \forall x \in R \\
+    \beta(x)  &\leq f(x), \forall x \in R 
+\end{align*}
+
+Now we can define $\epsilon$ function.
+
+\begin{align*}
+    \alpha(x) &= f(x) + \err\alpha, \err\alpha \geq 0 \\
+    \beta(x)  &= f(x) + \err\beta, \err\alpha \geq 0
+\end{align*}
+
+It is trivial to derive function $\gamma$ where $\err\gamma$ is smaller 
+than $\err\alpha$ and $\err\beta$.
+
+\begin{align*}
+    \gamma(x)   &= max(\alpha(x), \beta(x)) \\
+                &= max(f(x) - \err\alpha(x), f(x) - \err\beta(x)) \\
+                &= f(x) - min(\err\alpha(x), \err\beta(x)).
+\end{align*}
+
+This also gives us a usefulness requirement for $\alpha$ and $\beta$:
+
+\begin{align*}
+    \exists x \in R, ~ &\alpha(x) < \beta(x) \\
+    \exists x \in R, ~ &\beta(x) < \alpha(x)
+\end{align*}
+
+This means that function $\alpha$ and $\beta$ must be complementary.
+For some inputs one should give better approximations than the other.
+
+\subsection{Probablisitic approximation}
+
+\section{Approximating an unknown function}
+
+\section{Examples}
+
+Although the theory is straightforward the complexity arises from finding
+the appropriate functions to combine.
+
+\paragraph{Levenshtein Distance}
+
+\paragraph{Clustering}
+
+\section{Results}
+
+\section{Conclusions}
+
+
+\nocite{*}
+\bibliographystyle{ieeetr}
+\bibliography{bibliography}
+
+\end{document}

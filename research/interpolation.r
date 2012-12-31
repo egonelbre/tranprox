@@ -36,12 +36,15 @@ linear = function(x, xlen, i, n){
   rowSums(slice)/count
 }
 
+library(ggplot2)
 
-plot(sin(1:100/10))
-plot(interpolate(sin(1:100/10), 10, linear))
-plot(interpolate(sin(1:100/10), 10, gaussian.right))
 
-plot(interpolate(1:100, 10, gaussian.right))
+plot(sin(1:100/10), type="l", col=2)
+lines(sin(1+1:100/10), col=3)
+
+w = sin(1:100/10)
+x = sin(1 + 1:100/10)
+matplot(cbind(w,x), type="l")
 
 sum(dnorm(c(1:10), m=3) * c(1:10))
 
@@ -65,3 +68,5 @@ plotLine(mat2, 3)
 # plotLine(mat3, 4)
 
 rgl.bringtotop()
+
+
