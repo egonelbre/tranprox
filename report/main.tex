@@ -31,7 +31,7 @@
 \title{Approximating discontinous functions}
 
 \author{
-    Egon Elbre \\
+    Egon Elbre, Olga Agen \\
         Department of Computer Science \\
     University of Tartu\\
     Tartu\\
@@ -46,11 +46,11 @@
 \begin{abstract}
 Calculating discontinous functions can be difficult and computationally
 expensive. By combining using approximation functions we can lower 
-the computational expensiveness. Defining good approximation function 
-can be a hard to get right. However, defining an approximation 
-that works for some value can be simpler. We show how combining
-several simple approximations can give us a better approximation
-and reduce computational requirements.
+the computational expensiveness at the cost of errors.
+Defining good approximation function can be a hard to get right. 
+However, defining an approximation that works for some value can 
+be simpler. We show how combining several simple approximations 
+can give us a better approximation and reduce computational requirements.
 \end{abstract}
 
 \section{Introduction}
@@ -124,21 +124,56 @@ For some inputs one should give better approximations than the other.
 
 \subsection{Probablisitic approximation}
 
-\section{Approximating an unknown function}
+Having such hard boundary severly restricts the possible functions we can
+use. If we allow some mistake in the boundary we can get better precision,
+but we won't know to which side we will make errors.
 
-\section{Examples}
+Depending of our use case it may be acceptable.
 
-Although the theory is straightforward the complexity arises from finding
-the appropriate functions to combine.
+\section{Distance approximation}
 
-\paragraph{Levenshtein Distance}
+The same idea can be used in distance measures.
 
-\paragraph{Clustering}
+$$
+  f(x,y) = max(g(x,y), h(x,y))
+$$
 
-\section{Results}
+Since most distance measures are required to calculate between multiple
+elements we can first do a transformation into a metric space and then
+use the same prinicple to extract the distance.
+
+$$
+  f(x,y) = max( dist_1(t_1(x), t_1(y)), dist_2(t_2(x), t_2(y)) )
+$$
+
+This way we can reuse computation of $t_1$ or even do additional operations on it.
+For example it can allow us to do range querys.
+
+$$
+  query(x,R) = \{ y | dist_1(t_1(x), t_1(y)) <= R \} \cap \{ y | dist_2(t_2(x), t_2(y)) <= R \}
+$$
+
+If our distance function is simple, such as Manhattan or Euclidian, we can 
+use already existing range query algorithms and data structures.
+
+\section{Example: Levenshtein on Nucleotide Sequences}
+
+We expect that the reader is already familiar with Levenshtein algorithm and
+ideas behind Fourier and Wavelet transformations. Refer to better source.
+
+As the basis we use hamming, smoothing, fourier, haar transformation. 
+
+\subsection{Using}
+
+\subsection{Results}
 
 \section{Conclusions}
 
+The design of approximationing functions becomes much simpler when we restrict the
+space where they work correctly.
+
+The results show that this idea could be useful, although the extent of usability
+needs further analysis.
 
 \nocite{*}
 \bibliographystyle{ieeetr}

@@ -27,10 +27,12 @@ par(mfrow=c(1,1))
 distance = dist(dist.comp)
 cluster = hclust(distance, method="ward")
 plot(cluster, hang=-1, label=data)
+cluster.composite = cutree(cluster, 7)
 
 distance = dist(dist.levenshtein)
 cluster = hclust(distance, method="ward")
 plot(cluster, hang=-1, label=data)
+cluster.levenshtein = cutree(cluster, 7)
 
 
 colnames(dist.comp) = data
@@ -39,17 +41,6 @@ rownames(dist.comp) = data
 colnames(dist.levenshtein) = data
 rownames(dist.levenshtein) = data
 
-library(igraph)
+library(fpc)
 
-plotgraph = function(dist){
-  temp = dist*(10-dist > 6)
-  g = graph.adjacency(temp, weighted=T, mode = "undirected")
-  g = simplify(g)
-  V(g)$label = V(g)$name
-  V(g)$degree = degree(g)
-  set.seed(3952)
-  layout1 = layout.fruchterman.reingold(g)
-  plot(g, layout=layout1)  
-}
-
-plotgraph(dist.comp)
+cluster.stats(d, cluster.composite, cluster.levenshtein)
