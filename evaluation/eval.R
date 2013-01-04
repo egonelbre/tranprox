@@ -1,6 +1,6 @@
 source('../lib/tranprox.r')
 
-data = readSequences("dna8.csv")
+data = readSequences("dna.csv")
 
 labels = as.matrix(louter(data, data, pairname))
 dist.levenshtein = run(data, compose(), levenshtein)
@@ -24,7 +24,7 @@ impr.fourier = calcImpr(dist.none,norm.fourier*dist.fourier)
 impr.fourierM = calcImpr(dist.none,norm.fourierM*dist.fourierM)
 impr.fourierRe = calcImpr(dist.none,norm.fourierRe*dist.fourierRe)
 impr.fourierIm = calcImpr(dist.none,norm.fourierIm*dist.fourierIm)
-impr.haar = calcNorm(dist.levenshtein,norm.haar*dist.haar,0.05)
+impr.haar = calcImpr(dist.none,norm.haar*dist.haar)
 impr.blur = calcImpr(dist.none,norm.blur*floor(dist.blur) + 2)
 
 #Fourier
