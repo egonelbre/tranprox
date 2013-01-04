@@ -69,8 +69,29 @@ haar = function(data){
   h@W$W1
 }
 
+mkHaar = function(levels){
+  function(data){
+    h = dwt(data, filter="haar",n.levels=levels, boundary="reflection", fast=FALSE)
+    h@W$W1
+  }
+}
+
 ## FFT
 
-fourier = fft
+fourier = mvfft
 
+## Smoothing
+blur.3 = c(1,2,1)
+blur.5 = c(1,2,5,2,1)
 
+mkBlur = function(kernel = blur.3){
+  function(data){
+    size = dim(data)
+    result = matrix(0, nrow=size[1], ncol=size[2]+length(kernel)-1)
+    for(i in seq(kernel)){
+      r = i:(i+size[2]-1)
+      result[,r] = result[,r] + data * kernel[i]
+    }
+    result / sum(kernel)
+  }
+}
