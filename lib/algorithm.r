@@ -16,6 +16,20 @@ louter = function(x, y, f){
   res
 }
 
+vouter = function(x, y, f){
+  xn = length(x)
+  yn = length(y)
+  i = 1
+  res = vector(length=xn*yn)
+  for(xi in 1:xn ){
+    for(yi in 1:yn ){
+      res[i] = f(x[[xi]], y[[yi]])
+      i = i + 1
+    }
+  }
+  res
+}
+
 lcross = function(x, y, f){
   xn = length(x)
   yn = length(y)
@@ -32,8 +46,8 @@ lcross = function(x, y, f){
 
 run = function(data, transform, distance){
   transformed = lapply(data, transform)
-  distances = louter(transformed, transformed, distance)
-  unlist(distances)
+  distances = vouter(transformed, transformed, distance)
+  distances
 }
 
 runcross = function(data, transform, distance){

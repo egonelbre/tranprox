@@ -1,5 +1,5 @@
 % document type
-\documentclass [12pt]{article} % oneside
+\documentclass [12pt, a4]{article} % oneside
 
 % fixes
 \usepackage{fixltx2e} % LaTeX patches, \textsubscript
@@ -192,21 +192,76 @@ One of the first problems is converting nucleotide sequence to a signal. There a
 
 Tetrahedral representation means each nucleotide is assigned to a tetrahedron corner. This means that the distance between any nucleotide is $1$ after conversion.
 
+\paragraph{Transformation}
+
+For transformation we use identity, smoothing, Fourier and Haar transformation.
+
+\paragraph{Distance}
+
+As distance we use Euclidean and Manhattan distance. Euclidean has been modified to take into account complex numbers.
+
 \paragraph{Normalization}
 
 Since the distance between transformed data can be on different scale we somehow need to normalize. We chose a simple strategy:
 
-$$
-\{ d ~ | ~ \forall x,y ~ d = dist(t(x),(y)) \}
-$$
+$$f(x,y) - a*dist(t(x),t(y)) \geq 0$$
+$$D = run(Q, t, dist) = \{ d ~ | ~ \forall x,y \in Q ~ d = f(x,y) / dist(t(x),t(y)) \}$$
+
+Where $Q$ is some sample from the whole range $R$. Then we can use quantile function on $D$ to approximate the scaling. That way we allow some mistakes and minimize the error.
+
+\paragraph{Measuring improvement}
+
+We need to somehow approximate how much would an additional measure improve the previous measure. For that we use
+
+\begin{align*}
+D_{base} &= run(Q, t_{base}, dist_{base}) \\
+D_{new} &= run(Q, t_{new}, dist_{new}) \\
+improvement &= count(D_{base} > D_{new} ) / |Q|
+\end{align*}
+
+\paragraph{Dataset}
+
+For evaluating methods we generated random dataset of 500 elements with 10 nucleotides per sequence.
 
 \subsection{Hamming distance}
 
+We use Hamming distance as our basis for our approximation.
+
+\includegraphics[width=0.9\textwidth]{img/hamming.png}
+
+Here we can see that Hamming distance is an upper bound for Levenshtein distance.
+
 \subsection{Fourier transformation}
+
+We examine several variations of Fourier transformation and distance functions. First, we looked at fast Fourier transformation using at both Euclidean and Manhattan distances. We tried using only imaginary and only real parts of the FFT result and the combination.
+
+\includegraphics[width=0.9\textwidth]{img/fourier.png}
+
+Fourier transformations provides some improvement to Hamming distance.
+
+\begin{tabular}{ r | l }
+    Transformation & Improvement \\ \hline
+    Fourier           & 0.242712 \\
+    Fourier Manhattan & 0.105872 \\
+    Fourier Imaginary & 0.10732 \\
+    Fourier Real      & 0.073592 \\
+\end{tabular}
+
+\subsection{Haar transformation}
+
+We examine only Haar transformation from wavelet transformations. There are possibly other wavelets that give better improvement.
+
+\includegraphics[width=0.9\textwidth]{img/haar.png}
+
+Haar in this case improved by 0.142224.
 
 \subsection{Smoothing transformation}
 
-\subsection{Wavelet transformations}
+We use smoothing kernel $[1,2,1]$ for "Blur" and $[1,2,5,2,1]$ for "Blur5".
+
+\includegraphics[width=0.9\textwidth]{img/blur.png}
+
+The improvements are 0.422176 and 0.388 correspondingly.
 
 \subsection{Queries}
 
