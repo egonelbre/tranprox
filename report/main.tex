@@ -57,7 +57,13 @@ can give us a better approximation and reduce computational requirements.
 
 \paragraph{Outline}
 
-\section{Theory}
+We first describe how we can improve approximation functions if they 
+satisfy some constraints. Then we show that we can allow some error
+in satisfying these constraints. Then we show how to use it on 
+calculating distances. Finally we show an approximation for
+Levenshtein distance as an example.
+
+\section{Improving approximations}
 
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\defas}{ := }
@@ -126,44 +132,83 @@ For some inputs one should give better approximations than the other.
 
 Having such hard boundary severly restricts the possible functions we can
 use. If we allow some mistake in the boundary we can get better precision,
-but we won't know to which side we will make errors.
+but we may constrain our results.
 
-Depending of our use case it may be acceptable.
+\begin{align*}
+    p_\alpha &\defas p(\alpha(x) \leq f(x)), x \in R \\
+    p_\beta &\defas p(\beta(x)  \leq f(x)), x \in R 
+\end{align*}
+
+This means that the probability of error at place $x$ of the 
+function $\gamma = max(\alpha, \beta)$ is:
+
+$$ p_\gamma(x) = \begin{cases}
+    p_\beta & \text{if $\alpha(x) \leq \beta(y)$}, \\
+    p_\alpha & \text{otherwise}.
+\end{cases}
+$$
+
+Probability of getting an error from the composite function:
+
+$$
+    max(p_\alpha, p_\beta) \leq p(\gamma(x) \leq f(x)) \leq p_\alpha + p_\beta
+$$
 
 \section{Distance approximation}
 
-The same idea can be used in distance measures.
+We can apply the same idea to distances:
 
 $$
-  f(x,y) = max(g(x,y), h(x,y))
+  \gamma(x,y) = max(\alpha(x,y), \beta(x,y))
 $$
 
-Since most distance measures are required to calculate between multiple
-elements we can first do a transformation into a metric space and then
-use the same prinicple to extract the distance.
+Since most distance measures are require pairwise computation over
+a large set, it would be benefitial to decompose such functions.
 
 $$
-  f(x,y) = max( dist_1(t_1(x), t_1(y)), dist_2(t_2(x), t_2(y)) )
+  \gamma(x,y) = max( dist_\alpha(t_\alpha(x), t_\alpha(y)), dist_\beta(t_\beta(x), t_\beta(y)) )
 $$
 
-This way we can reuse computation of $t_1$ or even do additional operations on it.
-For example it can allow us to do range querys.
+This way we can reuse computation of $t_\alpha$ and $t_\beta$ or even do additional operations on it. For example it allows us to do range queries.
 
 $$
-  query(x,R) = \{ y | dist_1(t_1(x), t_1(y)) <= R \} \cap \{ y | dist_2(t_2(x), t_2(y)) <= R \}
+  query(x,r) = \{ y | dist_\alpha(t_\alpha(x), t_\alpha(y)) <= r \} \cap \{ y | dist_\beta(t_\beta(x), t_\beta(y)) <= r \}
 $$
 
 If our distance function is simple, such as Manhattan or Euclidian, we can 
-use already existing range query algorithms and data structures.
+use advanced trees to store $t_\alpha$ and $t_\beta$ and use advanced query searches.
+
+If we are working with probablistic approximations we could use fuzzy sets for 
+results to have some error tolerance.
 
 \section{Example: Levenshtein on Nucleotide Sequences}
 
-We expect that the reader is already familiar with Levenshtein algorithm and
-ideas behind Fourier and Wavelet transformations. Refer to better source.
+As a starting point for designing approximation for Levenshtein distance
+we picked Hamming distance, Smoothing, Fourier tranformation and Haar transformation.\footnote{We expect that reader is already familiar with these concepts.}
 
-As the basis we use hamming, smoothing, fourier, haar transformation. 
+\paragraph{Converting to signal}
 
-\subsection{Using}
+One of the first problems is converting nucleotide sequence to a signal. There are multiple ways to do it. We chose tetrahedral representation as outlined in "Conversion of nucleotides sequences into genomic signals". \cite{cristea2002conversion}
+
+Tetrahedral representation means each nucleotide is assigned to a tetrahedron corner. This means that the distance between any nucleotide is $1$ after conversion.
+
+\paragraph{Normalization}
+
+Since the distance between transformed data can be on different scale we somehow need to normalize. We chose a simple strategy:
+
+$$
+\{ d ~ | ~ \forall x,y ~ d = dist(t(x),(y)) \}
+$$
+
+\subsection{Hamming distance}
+
+\subsection{Fourier transformation}
+
+\subsection{Smoothing transformation}
+
+\subsection{Wavelet transformations}
+
+\subsection{Queries}
 
 \subsection{Results}
 
