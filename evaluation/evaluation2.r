@@ -1,29 +1,10 @@
-source('input.r')
-source('algorithm.r')
-source("graph.r")
-source('transformations.r')
-source('distances.r')
+setwd("f:/dev/school/ut/mining/project/evaluation")
 
-
-tmp = lapply(data, convertToMatrix)
-
-plotLine = function(mat, col=1){
-  tmp = mat
-  tmp[1,] = tmp[1,] + seq(tmp[1,])
-  lines3d(tmp[1,], tmp[2,], tmp[3,], col=col)
-}
-
-open3d()
-plotLine(tmp[[9]], col=3)
-plotLine(tmp2[[9]], col=2)
-
-library("rgl")
-mat = rbind(sin(1:100/10), sin(2+1:100/3), sin(3+1:100/7))
-lines3d(mat[1,], mat[2,], mat[3,])
-mat2 = mkInterpolate(50, linear)(mat)
-lines3d(mat2[1,], mat2[2,], mat2[3,], col=2)
+source('../lib/tranprox.r')
 
 data = readSequences("dna8.csv")[1:8]
+
+plotLine(convertToMatrix(data[1]))
 
 labels = as.matrix(louter(data, data, pairname))
 dist.levenshtein = run(data, compose(), levenshtein)

@@ -1,17 +1,16 @@
 ## Text --> Matrix
 
 letterToVector <- function(letter){
-  if(letter == "A" || letter == "a"){x <- c(0,0,0) }
-  else if (letter == "C" || letter == "c"){x <- c(0,1,0)}
-  else if (letter == "G" || letter == "g"){x <- c(0,0,1)}
-  else if (letter == "T" || letter == "t"){x <- c(0,1,1)}
-  else {x <- c(-1,-1,-1)}
+  if(letter == "A" || letter == "a"){x <- c(0,0) }
+  else if (letter == "C" || letter == "c"){x <- c(1,0)}
+  else if (letter == "G" || letter == "g"){x <- c(0,1)}
+  else if (letter == "T" || letter == "t"){x <- c(1,1)}
+  else {x <- c(-1,-1)}
 }
-
 
 convertToMatrix <- function(string){
   splitted <- strsplit(string, '')[[1]]
-  m <- matrix(0,length(splitted),3)
+  m <- matrix(0,length(splitted),2)
   for(i in 1:length(splitted)) {
     m[i,] <- letterToVector(splitted[i]) 
   }
