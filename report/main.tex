@@ -55,6 +55,9 @@ can give us a better approximation and reduce computational requirements.
 
 \section{Introduction}
 
+Calculating complex discontinous functions can be time consuming and finding good approximations can be difficult. In this report we propose a method that could be used to simplify finding of approximations. We show that composing several approximations can help us to achieve at a better approximation.
+
+
 \paragraph{Outline}
 
 We first describe how we can improve approximation functions if they 
@@ -73,8 +76,6 @@ We are trying to approximate a function $f$:
 
 $$f : X \mapsto \Real$$
 
-Although we explain the idea in $\Real$ set, the results also apply to 
-any set that has transitive relation $<$ and $+-$ operation (TODO: find the correct algebraic structure). 
 Using $<$ we can define $\min$ and $\max$ for that set.
 
 $$ \min(x,y) \defas \begin{cases}
@@ -184,7 +185,7 @@ results to have some error tolerance.
 \section{Example: Levenshtein on Nucleotide Sequences}
 
 As a starting point for designing approximation for Levenshtein distance
-we picked Hamming distance\cite{wiki:Hamming}, Smoothing\cite{wiki:Smoothing}, Fourier tranformation\cite{wiki:Fourier} and Haar transformation\cite{wiki:Haar}.\footnote{We expect that reader is already familiar with these concepts.}
+we picked Hamming distance\cite{wiki:Hamming}, Smoothing\cite{wiki:Smoothing}, Fourier tranformation\cite{wiki:Fourier} and Haar transformation\cite{wiki:Haar}.\footnote{We expect that reader is already familiar with these concepts.} The source code for the example can be found at "http://github.com/egonelbre/tranprox"\cite{Tranprox}.
 
 \paragraph{Converting to signal}
 
@@ -195,6 +196,8 @@ Tetrahedral representation means each nucleotide is assigned to a tetrahedron co
 \paragraph{Transformation}
 
 For transformation we use identity, smoothing, Fourier and Haar transformation.
+If different length sequences are used then additional interpolation\cite{wiki:Interpolation} is required.
+
 
 \paragraph{Distance}
 
@@ -239,6 +242,7 @@ We examine several variations of Fourier transformation and distance functions. 
 
 Fourier transformations provides some improvement to Hamming distance.
 
+\begin{table}[H]
 \begin{tabular}{ r | l }
     Transformation & Improvement \\ \hline
     Fourier           & 0.242712 \\
@@ -246,6 +250,7 @@ Fourier transformations provides some improvement to Hamming distance.
     Fourier Imaginary & 0.10732 \\
     Fourier Real      & 0.073592 \\
 \end{tabular}
+\end{table}
 
 \subsection{Haar transformation}
 
@@ -273,40 +278,47 @@ We choose to compose the best transformations first (Hamming, Blur). Then Fourie
 
 To validate how well this function composing works we first generated 3000 DNA sequences and 100 query sequences. Then we queried using different ranges using both the composite and levenshtein distance.
 
-This table shows precentage of true positives from positives
+This table shows sensitivity:
 
 \begin{table}[H]
 \centering
 \begin{tabular}{ r | l l l }
 Method / Range & 3 & 4 & 5 \\ \hline
 Composed & 0.7495817 & 0.6649334 & 0.6781805 \\
-Hamming & 0.5794757 & 0.4675806 & 0.4433428 \\
-Blur & 0.4545455 & 0.4823919 & 0.5315241 \\
+Hamming  & 0.5794757 & 0.4675806 & 0.4433428 \\
+Blur     & 0.4545455 & 0.4823919 & 0.5315241 \\
 \end{tabular}
 \end{table}
 
-Precentage of false positives in results:
+This table shows false discovery rate:
 
 \begin{table}[H]
 \centering
 \begin{tabular}{ r | l l l }
 Method / Range & 3 & 4 & 5 \\ \hline
 Composed & 0.1913357 & 0.1484209 & 0.1024433 \\
-Hamming & 0        & 0        & 0         \\
-Blur & 0.2806708 & 0.1937056 & 0.127116 \\
+Hamming  & 0         & 0         & 0         \\
+Blur     & 0.2806708 & 0.1937056 & 0.127116  \\
 \end{tabular}
 \end{table}
 
-We can see the error increases when the range increases - which is to be expected.
-We can see that the composed method gives more accurate results.
+We can see false discovery rate and sensitivity drop as we increase the range.
+We can see that the composed method is more sensitive than uncomposed versions.
+Also the composed functions FDR is between Hamming and Blur methods.
 
-\section{Conclusions}
+\section{Results}
 
-The design of approximationing functions becomes much simpler when we restrict the
-space where they work correctly.
+We have examined the basic foundations of composing approximate functions and shown
+how one would proceed to design better approximations. We also showed that
+the composed approximation is better than the simple approximations.
 
-The results show that this idea could be useful, although the extent of usability
-needs further analysis.
+We learned that the design of approximationing functions becomes much simpler 
+when we restrict the space where they must work correctly.
+
+We were unable to investigate the performance improvements due to time constraints. 
+
+This preliminary research on this methodology of composing approximate functions gives
+some confirmation that it can be useful. The extent of usability needs further analysis.
 
 \nocite{*}
 \bibliographystyle{ieeetr}

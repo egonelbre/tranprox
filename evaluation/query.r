@@ -66,12 +66,23 @@ b4 = validate(queries, 4, bquery)
 b5 = validate(queries, 5, bquery)
 
 
-truePositives = function(confs, ncol){
+sensitivity = function(confs, ncol){
   matrix(lapply(confs, function(x){ x[2,2] / sum(x[2,]) }), ncol=ncol, byrow=T)
 }
 
-falsePositives = function(confs, ncol){
+precision = function(confs, ncol){
+  matrix(lapply(confs, function(x){ x[2,2] / sum(x[,2]) }), ncol=ncol, byrow=T)
+}
+
+falseDiscovery = function(confs, ncol){
   matrix(lapply(confs, function(x){ x[1,2] / sum(x[,2]) }), ncol=ncol, byrow=T)
 }
 
-truePositives( list(r3, r4, r5, h3, h4, h5, b3, b4, b5), 3)
+accuracy = function(confs, ncol){
+  matrix(lapply(confs, function(x){ x[1,1] + x[2,2] / sum(x) }), ncol=ncol, byrow=T)
+}
+
+sensitivity( list(r3, r4, r5, h3, h4, h5, b3, b4, b5), 3)
+precision( list(r3, r4, r5, h3, h4, h5, b3, b4, b5), 3)
+falseDiscovery( list(r3, r4, r5, h3, h4, h5, b3, b4, b5), 3)
+accuracy( list(r3, r4, r5, h3, h4, h5, b3, b4, b5), 3)
