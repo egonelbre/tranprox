@@ -1,16 +1,22 @@
 ## Text --> Matrix
 
+tetrahedron = matrix(c(
+   1, 0, -1/sqrt(2),
+  -1, 0, -1/sqrt(2),
+   0, 1,  1/sqrt(2),
+   0,-1,  1/sqrt(2)), byrow=T, ncol=3)/2
+
 letterToVector <- function(letter){
-  if(letter == "A" || letter == "a"){x <- c(0,0) }
-  else if (letter == "C" || letter == "c"){x <- c(1,0)}
-  else if (letter == "G" || letter == "g"){x <- c(0,1)}
-  else if (letter == "T" || letter == "t"){x <- c(1,1)}
+  if(letter == "A" || letter == "a")      {x <- tetrahedron[1,] }
+  else if (letter == "C" || letter == "c"){x <- tetrahedron[2,] }
+  else if (letter == "G" || letter == "g"){x <- tetrahedron[3,] }
+  else if (letter == "T" || letter == "t"){x <- tetrahedron[4,] }
   else {x <- c(-1,-1)}
 }
 
 convertToMatrix <- function(string){
   splitted <- strsplit(string, '')[[1]]
-  m <- matrix(0,length(splitted),2)
+  m <- matrix(0,length(splitted),3)
   for(i in 1:length(splitted)) {
     m[i,] <- letterToVector(splitted[i]) 
   }
