@@ -51,3 +51,9 @@ compose = function(...){
     data
   }
 }
+
+calcError = function(ref,oth,perc=0.05){
+  a = sort((ref+0.01)/(oth+0.01),decreasing=TRUE)
+  n= perc*length(a)
+  a[n]
+}
