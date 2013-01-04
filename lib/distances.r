@@ -7,7 +7,7 @@ euclidean = function(m1, m2){
   sum(sqrt(colSums((m1 - m2)^2)))
 }
 
-euclidieanIm = function(m1, m2){
+euclideanIm = function(m1, m2){
   df = m1 - m2
   sqrt(sum(Re(df)^2, Im(df)^2))
 }
