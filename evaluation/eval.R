@@ -63,8 +63,11 @@ plotComparsion(cbind(dist.levenshtein, dist.none, norm.haar*dist.haar), 50, c("L
 plotComparsion(cbind(dist.levenshtein, dist.none, norm.blur*dist.blur, norm.blur5*dist.blur5), 50, c("Levenshtein", "Hamming", "Blur", "Blur5"), labels,TRUE,0)
 
 
+#Evaluate composing
 
-
+calcImpr(min(dist.none, norm.blur*dist.blur), norm.fourier*dist.fourier)
+calcImpr(min(dist.none, norm.blur*dist.blur), norm.blur5*dist.blur5)
+calcImpr(min(dist.none, norm.blur*dist.blur), norm.haar*dist.haar)
 
 
 

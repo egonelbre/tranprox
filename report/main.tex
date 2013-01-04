@@ -184,7 +184,7 @@ results to have some error tolerance.
 \section{Example: Levenshtein on Nucleotide Sequences}
 
 As a starting point for designing approximation for Levenshtein distance
-we picked Hamming distance, Smoothing, Fourier tranformation and Haar transformation.\footnote{We expect that reader is already familiar with these concepts.}
+we picked Hamming distance\cite{wiki:Hamming}, Smoothing\cite{wiki:Smoothing}, Fourier tranformation\cite{wiki:Fourier} and Haar transformation\cite{wiki:Haar}.\footnote{We expect that reader is already familiar with these concepts.}
 
 \paragraph{Converting to signal}
 
@@ -263,9 +263,42 @@ We use smoothing kernel $[1,2,1]$ for "Blur" and $[1,2,5,2,1]$ for "Blur5".
 
 The improvements are 0.422176 and 0.388 correspondingly.
 
+\subsection{Composing}
+
+We need to evaluate how to compose the transformations to get the best approximation.
+
+We choose to compose the best transformations first (Hamming, Blur). Then Fourier and Haar do not give any improvement to that composition. In Levenshtein case we can do additionally "floor" operation because we know that the transformed distance must be larger than Levenshtein and Levenshtein can only have integer values.
+
 \subsection{Queries}
 
-\subsection{Results}
+To validate how well this function composing works we first generated 3000 DNA sequences and 100 query sequences. Then we queried using different ranges using both the composite and levenshtein distance.
+
+This table shows precentage of true positives from positives
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ r | l l l }
+Method / Range & 3 & 4 & 5 \\ \hline
+Composed & 0.7495817 & 0.6649334 & 0.6781805 \\
+Hamming & 0.5794757 & 0.4675806 & 0.4433428 \\
+Blur & 0.4545455 & 0.4823919 & 0.5315241 \\
+\end{tabular}
+\end{table}
+
+Precentage of false positives in results:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ r | l l l }
+Method / Range & 3 & 4 & 5 \\ \hline
+Composed & 0.1913357 & 0.1484209 & 0.1024433 \\
+Hamming & 0        & 0        & 0         \\
+Blur & 0.2806708 & 0.1937056 & 0.127116 \\
+\end{tabular}
+\end{table}
+
+We can see the error increases when the range increases - which is to be expected.
+We can see that the composed method gives more accurate results.
 
 \section{Conclusions}
 
